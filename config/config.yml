@@ -1,0 +1,10 @@
+listen:
+  type: port
+  bind_ip: user-rest-api
+  port: 8081
+storage:
+  host: postgres
+  port: 5432
+  database: "books_db"
+  username: "postgres"
+  password: "<your_password>"

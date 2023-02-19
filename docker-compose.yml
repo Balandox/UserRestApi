@@ -1,0 +1,41 @@
+version: '3.3'
+
+services:
+
+  postgres:
+    image: postgres:13.3
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=<your_password>
+      - POSTGRES_DB=books_db
+    volumes:
+      - /var/lib/postgresql/data:/var/lib/postgresql/data #Директория БД.
+      - /var/log/postgresql:/var/log/postgresql #log файл
+      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - app-network
+
+  rest-api:
+    container_name: user-rest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+        debug: 'true'
+        port: '8081'
+    image: balandox/user-rest-api
+    links:
+      - postgres
+    ports:
+      - "8081:8081"
+    env_file:
+      - docker.env
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
